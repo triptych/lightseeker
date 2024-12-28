@@ -4,6 +4,9 @@ All notable changes to the LightSeeker project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed canvas rendering issue (b687a5f) by correctly accessing canvas element from KAPLAY instance
+
 ## [0.1.0] - 2024-01-09
 
 ### Changed
