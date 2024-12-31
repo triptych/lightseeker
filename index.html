@@ -4,89 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>LightSeeker</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-                background: #000;
-            }
-
-            #game-container {
-                flex: 1;
-                width: 100%;
-                position: relative;
-                overflow: hidden;
-            }
-
-            #controls {
-                width: 100%;
-                padding: 20px;
-                background: #333;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 20px;
-            }
-
-            .d-pad {
-                display: grid;
-                grid-template-columns: repeat(3, 40px);
-                grid-template-rows: repeat(3, 40px);
-                gap: 5px;
-            }
-
-            .d-pad button {
-                width: 100%;
-                height: 100%;
-                border: none;
-                border-radius: 8px;
-                background: #666;
-                color: white;
-                font-size: 20px;
-                touch-action: manipulation;
-            }
-
-            .d-pad button:active {
-                background: #888;
-            }
-
-            .action-buttons {
-                display: flex;
-                gap: 20px;
-            }
-
-            .action-buttons button {
-                width: 60px;
-                height: 60px;
-                border: none;
-                border-radius: 50%;
-                background: #666;
-                color: white;
-                font-size: 16px;
-                touch-action: manipulation;
-            }
-
-            .action-buttons button:active {
-                background: #888;
-            }
-
-            /* Hide empty d-pad cells */
-            .d-pad button:nth-child(1),
-            .d-pad button:nth-child(3),
-            .d-pad button:nth-child(7),
-            .d-pad button:nth-child(9) {
-                visibility: hidden;
-            }
-        </style>
+        <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
         <div id="game-container"></div>
@@ -110,6 +28,6 @@
             </div>
         </div>
 
-        <script type="module" src="game.js"></script>
+        <script type="module" src="scripts/game.js"></script>
     </body>
 </html>
