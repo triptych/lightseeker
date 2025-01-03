@@ -5,12 +5,14 @@ A browser-based game engine and editor for creating 2D pixel-perfect games. Buil
 ## Features
 
 ### Core Engine
+
 - Pixel-perfect rendering with KAPLAY.js integration
 - Tile-based map system with multiple layers
 - Vector-based character movement
 - Mobile-friendly controls with virtual d-pad
 
 ### Map Editor
+
 - Grid-based placement system
 - Multi-layer management (ground/objects/events)
 - Intuitive editing tools (select/paint/erase)
@@ -27,6 +29,7 @@ A browser-based game engine and editor for creating 2D pixel-perfect games. Buil
 ## Development Status
 
 The project is actively under development. Current focus areas:
+
 - Character collision system
 - Sprite implementation
 - Event system
