@@ -1,43 +1,57 @@
 # LightSeeker Development Tasks
 
 ## Phase 1: Core Engine Setup
-- [ ] Initialize project structure
-  - Set up project directories (assets, scripts, styles)
-  - Create initial HTML structure
-  - Set up development environment
-- [ ] Implement KAPLAY.js integration
-  - Initialize game with pixel-perfect rendering
-  - Set up debug mode
-  - Configure canvas dimensions and scaling
-- [ ] Build basic map rendering system
-  - Implement tile-based rendering
-  - Create layer system for ground/objects
-  - Set up camera/viewport
-- [ ] Create character movement system
-  - Implement vector-based movement
-  - Add collision detection
-  - Set up character sprites
+- [x] Initialize project structure
+  - [x] Set up project directories (assets, scripts, styles)
+  - [x] Create initial HTML structure
+  - [x] Set up development environment
+- [x] Implement KAPLAY.js integration
+  - [x] Initialize game with pixel-perfect rendering
+  - [x] Set up debug mode
+  - [x] Configure canvas dimensions and scaling
+- [x] Build basic map rendering system
+  - [x] Implement tile-based rendering
+  - [x] Create layer system for ground/objects
+  - [x] Set up camera/viewport
+- [x] Create character movement system
+  - [x] Implement vector-based movement
+  - [ ] Add collision detection
+  - [ ] Set up character sprites
 - [ ] Implement core event system
   - Create event manager
   - Set up event triggers
   - Implement basic event actions
 
 ## Phase 2: Edit Mode Development
-- [ ] Develop Map Editor
-  - Create grid-based placement system
-  - Implement tile selection interface
-  - Add layer management
-  - Create tools for painting/erasing
+- [x] Develop Map Editor Core
+  - [x] Create grid-based placement system
+  - [x] Add layer management (ground/objects/events)
+  - [x] Create basic tools (select/paint/erase)
+- [ ] Enhance Map Editor
+  - [x] Implement tile palette system
+  - [ ] Add tile preview on hover
+  - [ ] Create undo/redo system
+  - [ ] Add tile rotation/flipping
+  - [ ] Implement tile properties editor
+  - [ ] Add map save/load functionality
 - [ ] Create Character Designer
   - Build character component system
   - Implement sprite composition
   - Add stat configuration
   - Create equipment system
 - [ ] Build Event Editor
-  - Create visual node editor
-  - Implement event trigger system
-  - Add condition editor
-  - Create action editor
+  - [ ] Create visual node editor
+    - [ ] Design node connection system
+    - [ ] Add node templates for common events
+    - [ ] Implement variable system
+  - [ ] Implement event trigger system
+    - [ ] Add trigger zones
+    - [ ] Create condition builder
+    - [ ] Add action sequence editor
+  - [ ] Add event testing tools
+    - [ ] Create event simulator
+    - [ ] Add breakpoint system
+    - [ ] Implement variable inspector
 - [ ] Implement Battle System Designer
   - Create turn order configuration
   - Add damage formula editor

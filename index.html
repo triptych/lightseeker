@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>LightSeeker</title>
-        <link rel="stylesheet" href="styles/main.css">
-    </head>
-    <body>
-        <div id="game-container"></div>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LightSeeker</title>
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+    <div id="mode-toggle">
+      <button id="play-mode" class="active">Play</button>
+      <button id="edit-mode">Edit</button>
+    </div>
 
-        <div id="controls">
-            <div class="d-pad">
-                <button></button>
-                <button>↑</button>
-                <button></button>
-                <button>←</button>
-                <button></button>
-                <button>→</button>
-                <button></button>
-                <button>↓</button>
-                <button></button>
-            </div>
+    <div id="game-container"></div>
 
-            <div class="action-buttons">
-                <button>A</button>
-                <button>B</button>
-            </div>
-        </div>
+    <div id="editor-tools" style="display: none;">
+      <div class="tool-group">
+        <button data-tool="select">Select</button>
+        <button data-tool="paint">Paint</button>
+        <button data-tool="erase">Erase</button>
+      </div>
+      <div class="layer-controls">
+        <button data-layer="ground">Ground</button>
+        <button data-layer="objects">Objects</button>
+        <button data-layer="events">Events</button>
+      </div>
+    </div>
 
-        <script type="module" src="scripts/game.js"></script>
-    </body>
+    <div id="controls">
+      <div class="d-pad">
+        <button></button>
+        <button>↑</button>
+        <button></button>
+        <button>←</button>
+        <button></button>
+        <button>→</button>
+        <button></button>
+        <button>↓</button>
+        <button></button>
+      </div>
+
+      <div class="action-buttons">
+        <button>A</button>
+        <button>B</button>
+      </div>
+    </div>
+
+    <script type="module" src="scripts/game.js"></script>
+  </body>
 </html>

@@ -5,6 +5,19 @@ All notable changes to the LightSeeker project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Added README.md with project overview, features, and setup instructions
+- Added MIT License for 2025
+- Marked completion of core engine setup tasks:
+  - KAPLAY.js integration with pixel-perfect rendering
+  - Basic map rendering system with layers
+  - Vector-based character movement
+- Marked completion of map editor features:
+  - Grid-based placement system
+  - Layer management
+  - Basic editing tools
+  - Tile palette system
+
+### Added (Previous)
 - Implemented mobile-friendly controls with virtual D-pad and action buttons
 - Added responsive canvas scaling for better display across devices
 - Created basic player movement system with keyboard and touch support

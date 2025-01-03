@@ -1,5 +1,11 @@
 import kaplay from "https://unpkg.com/kaplay@3001/dist/kaplay.mjs";
 
+// Game state
+let currentMode = "play"; // "play" or "edit"
+let currentTool = "select";
+let currentLayer = "ground";
+const gridSize = 40;
+
 // Initialize Kaplay
 const canvas = kaplay({
     width: 800,
@@ -143,5 +149,90 @@ scene("game", () => {
     });
 });
 
-// Start the game
+// Mode switching
+const playModeBtn = document.getElementById("play-mode");
+const editModeBtn = document.getElementById("edit-mode");
+const editorTools = document.getElementById("editor-tools");
+const controls = document.getElementById("controls");
+
+playModeBtn.addEventListener("click", () => switchMode("play"));
+editModeBtn.addEventListener("click", () => switchMode("edit"));
+
+function switchMode(mode) {
+    currentMode = mode;
+
+    // Update UI
+    playModeBtn.classList.toggle("active", mode === "play");
+    editModeBtn.classList.toggle("active", mode === "edit");
+    editorTools.style.display = mode === "edit" ? "flex" : "none";
+    controls.style.display = mode === "play" ? "flex" : "none";
+
+    // Switch scenes
+    go(mode === "play" ? "game" : "edit");
+}
+
+// Editor tools
+document.querySelectorAll("#editor-tools [data-tool]").forEach(button => {
+    button.addEventListener("click", (e) => {
+        currentTool = e.target.dataset.tool;
+        document.querySelectorAll("#editor-tools [data-tool]").forEach(btn =>
+            btn.classList.toggle("active", btn === e.target)
+        );
+    });
+});
+
+document.querySelectorAll("#editor-tools [data-layer]").forEach(button => {
+    button.addEventListener("click", (e) => {
+        currentLayer = e.target.dataset.layer;
+        document.querySelectorAll("#editor-tools [data-layer]").forEach(btn =>
+            btn.classList.toggle("active", btn === e.target)
+        );
+    });
+});
+
+// Editor scene
+scene("edit", () => {
+    // Add grid
+    for (let x = 0; x < width(); x += gridSize) {
+        add([
+            rect(1, height()),
+            pos(x, 0),
+            color(0.5, 0.5, 0.5, 0.3),
+            fixed()
+        ]);
+    }
+    for (let y = 0; y < height(); y += gridSize) {
+        add([
+            rect(width(), 1),
+            pos(0, y),
+            color(0.5, 0.5, 0.5, 0.3),
+            fixed()
+        ]);
+    }
+
+    // Handle mouse input for editing
+    onClick((mousePos) => {
+        if (currentTool === "paint") {
+            const gridX = Math.floor(mousePos.x / gridSize) * gridSize;
+            const gridY = Math.floor(mousePos.y / gridSize) * gridSize;
+
+            add([
+                rect(gridSize - 2, gridSize - 2),
+                pos(gridX + 1, gridY + 1),
+                color(1, 0, 0),
+                layer(currentLayer),
+                "tile"
+            ]);
+        } else if (currentTool === "erase") {
+            every("tile", (tile) => {
+                if (mousePos.x >= tile.pos.x && mousePos.x <= tile.pos.x + gridSize &&
+                    mousePos.y >= tile.pos.y && mousePos.y <= tile.pos.y + gridSize) {
+                    destroy(tile);
+                }
+            });
+        }
+    });
+});
+
+// Start in play mode
 go("game");

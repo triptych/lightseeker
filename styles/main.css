@@ -13,6 +13,59 @@ body {
     background: #000;
 }
 
+#mode-toggle {
+    padding: 10px;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#mode-toggle button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    background: #444;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#mode-toggle button.active {
+    background: #666;
+}
+
+#editor-tools {
+    padding: 15px;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.tool-group, .layer-controls {
+    display: flex;
+    gap: 10px;
+}
+
+#editor-tools button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background: #444;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#editor-tools button.active {
+    background: #666;
+}
+
+#editor-tools button:hover {
+    background: #555;
+}
+
 #game-container {
     flex: 1;
     width: 100%;
