@@ -9,7 +9,7 @@ All notable changes to the LightSeeker project will be documented in this file.
 - README.md with project overview, features, and setup instructions
 - MIT License for 2025
 - Core engine setup features:
-  - KAPLAY.js integration with pixel-perfect rendering
+  - HTML5 Canvas API implementation with pixel-perfect rendering
   - Basic map rendering system with layers
   - Vector-based character movement
 - Map editor features:
@@ -24,7 +24,7 @@ All notable changes to the LightSeeker project will be documented in this file.
 
 ### Fixed
 
-- Canvas rendering issue (b687a5f) by correctly accessing canvas element from KAPLAY instance
+- Canvas rendering issue (b687a5f) by correctly accessing canvas element and context
 
 ## [0.1.0] - 2024-01-09
 
@@ -34,6 +34,6 @@ All notable changes to the LightSeeker project will be documented in this file.
   - Changed from puzzle-platformer to web-based RPG game making tool
   - Added Play Mode features (RPG gameplay, battles, quests)
   - Added Edit Mode tools (map editor, character creator, event system)
-  - Updated technical implementation with KAPLAY.js integration
+  - Updated technical implementation with Canvas API
   - Added community features and sharing capabilities
   - Revised development timeline to reflect new scope

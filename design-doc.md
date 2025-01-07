@@ -26,41 +26,66 @@ LightSeeker is a web-based RPG game development platform that combines the depth
 
 1. Map Editor
 ```javascript
-// Initialize map editor with pixel-perfect rendering
-const editor = kaplay({
-    width: 800,
-    height: 600,
-    scale: 2,
-    crisp: true,
-    letterbox: true
-});
+// Initialize map editor with canvas
+const canvas = document.createElement('canvas');
+canvas.width = 800;
+canvas.height = 600;
+const ctx = canvas.getContext('2d');
+
+// Enable crisp pixel rendering
+ctx.imageSmoothingEnabled = false;
 
 // Grid-based tile placement system
-const mapGrid = add([
-    pos(0, 0),
-    grid(32, 32),
-    area()
-]);
+class MapGrid {
+    constructor(tileSize) {
+        this.tileSize = tileSize;
+        this.tiles = new Map();
+    }
+
+    addTile(x, y, type) {
+        const key = `${x},${y}`;
+        this.tiles.set(key, type);
+    }
+
+    draw(ctx) {
+        this.tiles.forEach((type, key) => {
+            const [x, y] = key.split(',').map(Number);
+            ctx.fillRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize);
+        });
+    }
+}
+
+const mapGrid = new MapGrid(32);
 ```
 
 2. Character Creator
 ```javascript
 // Character component system
-const createCharacter = (config) => add([
-    sprite(config.sprite),
-    pos(config.x, config.y),
-    area(),
-    {
-        stats: {
+class Character {
+    constructor(config) {
+        this.sprite = config.sprite;
+        this.x = config.x;
+        this.y = config.y;
+        this.width = config.width || 32;
+        this.height = config.height || 32;
+        this.stats = {
             hp: config.hp || 100,
             mp: config.mp || 50,
             strength: config.strength || 10,
             defense: config.defense || 10
-        },
-        inventory: [],
-        quests: []
+        };
+        this.inventory = [];
+        this.quests = [];
     }
-]);
+
+    draw(ctx) {
+        if (this.sprite) {
+            ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+        }
+    }
+}
+
+const createCharacter = (config) => new Character(config);
 ```
 
 3. Event System
@@ -192,7 +217,7 @@ const characterData = {
 ## Development Phases
 
 ### Phase 1: Core Engine
-1. Implement KAPLAY.js integration
+1. Implement Canvas rendering system
 2. Build basic map rendering
 3. Create character movement system
 4. Implement event system

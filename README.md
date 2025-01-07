@@ -1,12 +1,12 @@
 # LightSeeker
 
-A browser-based game engine and editor for creating 2D pixel-perfect games. Built with KAPLAY.js, LightSeeker provides an intuitive interface for game development with no coding required.
+A browser-based game engine and editor for creating 2D pixel-perfect games. Built with HTML5 Canvas API, LightSeeker provides an intuitive interface for game development with no coding required.
 
 ## Features
 
 ### Core Engine
 
-- Pixel-perfect rendering with KAPLAY.js integration
+- Pixel-perfect rendering with HTML5 Canvas
 - Tile-based map system with multiple layers
 - Vector-based character movement
 - Mobile-friendly controls with virtual d-pad

@@ -5,7 +5,7 @@
     - [x] Set up project directories (assets, scripts, styles)
     - [x] Create initial HTML structure
     - [x] Set up development environment
-- [x] Implement KAPLAY.js integration
+- [x] Implement Canvas rendering system
     - [x] Initialize game with pixel-perfect rendering
     - [x] Set up debug mode
     - [x] Configure canvas dimensions and scaling

@@ -1,23 +1,17 @@
-import kaplay from "https://unpkg.com/kaplay@3001/dist/kaplay.mjs";
-
 // Game state
 let currentMode = "play"; // "play" or "edit"
 let currentTool = "select";
 let currentLayer = "ground";
 const gridSize = 40;
 
-// Initialize Kaplay
-const canvas = kaplay({
-    width: 800,
-    height: 600,
-    scale: 1,
-    crisp: true,
-    canvas: document.createElement("canvas"),
-    global: true,
-});
+// Initialize Canvas
+const canvas = document.createElement("canvas");
+canvas.width = 800;
+canvas.height = 600;
+const ctx = canvas.getContext("2d");
 
 // Add canvas to game container
-document.getElementById("game-container").appendChild(canvas.canvas);
+document.getElementById("game-container").appendChild(canvas);
 
 // Make canvas responsive
 function resizeCanvas() {
@@ -25,16 +19,16 @@ function resizeCanvas() {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     const scale = Math.min(
-        containerWidth / width(),
-        containerHeight / height()
+        containerWidth / canvas.width,
+        containerHeight / canvas.height
     );
 
-    canvas.canvas.style.width = `${width() * scale}px`;
-    canvas.canvas.style.height = `${height() * scale}px`;
-    canvas.canvas.style.position = "absolute";
-    canvas.canvas.style.left = "50%";
-    canvas.canvas.style.top = "50%";
-    canvas.canvas.style.transform = `translate(-50%, -50%)`;
+    canvas.style.width = `${canvas.width * scale}px`;
+    canvas.style.height = `${canvas.height * scale}px`;
+    canvas.style.position = "absolute";
+    canvas.style.left = "50%";
+    canvas.style.top = "50%";
+    canvas.style.transform = `translate(-50%, -50%)`;
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -111,42 +105,135 @@ actionButtons.forEach(button => {
     });
 });
 
-// Test scene
+// Game objects and scenes
+let currentScene = null;
+const scenes = {};
+const gameObjects = new Set();
+
+class GameObject {
+    constructor(x, y, width, height, color) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.speed = 200;
+        gameObjects.add(this);
+    }
+
+    update(dt) {
+        // Override in subclasses
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+
+    destroy() {
+        gameObjects.delete(this);
+    }
+}
+
+// Scene management
+function scene(name, setupFn) {
+    scenes[name] = setupFn;
+}
+
+function go(sceneName) {
+    gameObjects.clear();
+    currentScene = sceneName;
+    if (scenes[sceneName]) {
+        scenes[sceneName]();
+    }
+}
+
+// Game scene
 scene("game", () => {
-    // Add a test rectangle that can be moved with controls
-    const player = add([
-        rect(40, 40),
-        pos(width() / 2, height() / 2),
-        color(0, 255, 0),
-        {
-            speed: 200
-        }
-    ]);
+    const player = new GameObject(
+        canvas.width / 2 - 20,
+        canvas.height / 2 - 20,
+        40,
+        40,
+        "rgb(0, 255, 0)"
+    );
 
-    // Update player movement based on active directions
-    player.onUpdate(() => {
-        const moveDir = vec2(0, 0);
+    player.update = (dt) => {
+        const moveDir = { x: 0, y: 0 };
 
-        if (activeDirections.has("left")) moveDir.x -= 1;
-        if (activeDirections.has("right")) moveDir.x += 1;
-        if (activeDirections.has("up")) moveDir.y -= 1;
-        if (activeDirections.has("down")) moveDir.y += 1;
-
-        // Also support keyboard
-        if (isKeyDown("left")) moveDir.x -= 1;
-        if (isKeyDown("right")) moveDir.x += 1;
-        if (isKeyDown("up")) moveDir.y -= 1;
-        if (isKeyDown("down")) moveDir.y += 1;
+        if (activeDirections.has("left") || keyStates["ArrowLeft"]) moveDir.x -= 1;
+        if (activeDirections.has("right") || keyStates["ArrowRight"]) moveDir.x += 1;
+        if (activeDirections.has("up") || keyStates["ArrowUp"]) moveDir.y -= 1;
+        if (activeDirections.has("down") || keyStates["ArrowDown"]) moveDir.y += 1;
 
         if (moveDir.x !== 0 || moveDir.y !== 0) {
             // Normalize for diagonal movement
-            moveDir.x = moveDir.x / Math.sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
-            moveDir.y = moveDir.y / Math.sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
+            const length = Math.sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
+            moveDir.x = moveDir.x / length;
+            moveDir.y = moveDir.y / length;
 
-            player.pos.x += moveDir.x * player.speed * dt();
-            player.pos.y += moveDir.y * player.speed * dt();
+            player.x += moveDir.x * player.speed * dt;
+            player.y += moveDir.y * player.speed * dt;
         }
-    });
+    };
+});
+
+// Editor scene
+scene("edit", () => {
+    // Add grid lines
+    const gridLines = new GameObject(0, 0, canvas.width, canvas.height, "transparent");
+    gridLines.draw = (ctx) => {
+        ctx.strokeStyle = "rgba(128, 128, 128, 0.3)";
+        ctx.lineWidth = 1;
+
+        // Vertical lines
+        for (let x = 0; x < canvas.width; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+
+        // Horizontal lines
+        for (let y = 0; y < canvas.height; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+    };
+});
+
+// Input handling
+const keyStates = {};
+window.addEventListener("keydown", (e) => {
+    keyStates[e.key] = true;
+});
+window.addEventListener("keyup", (e) => {
+    keyStates[e.key] = false;
+});
+
+canvas.addEventListener("click", (e) => {
+    if (currentMode !== "edit") return;
+
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const scale = canvas.width / rect.width;
+
+    const gridX = Math.floor(mouseX * scale / gridSize) * gridSize;
+    const gridY = Math.floor(mouseY * scale / gridSize) * gridSize;
+
+    if (currentTool === "paint") {
+        new GameObject(gridX + 1, gridY + 1, gridSize - 2, gridSize - 2, "red");
+    } else if (currentTool === "erase") {
+        gameObjects.forEach(obj => {
+            if (obj.x >= gridX && obj.x < gridX + gridSize &&
+                obj.y >= gridY && obj.y < gridY + gridSize) {
+                obj.destroy();
+            }
+        });
+    }
 });
 
 // Mode switching
@@ -190,49 +277,25 @@ document.querySelectorAll("#editor-tools [data-layer]").forEach(button => {
     });
 });
 
-// Editor scene
-scene("edit", () => {
-    // Add grid
-    for (let x = 0; x < width(); x += gridSize) {
-        add([
-            rect(1, height()),
-            pos(x, 0),
-            color(0.5, 0.5, 0.5, 0.3),
-            fixed()
-        ]);
-    }
-    for (let y = 0; y < height(); y += gridSize) {
-        add([
-            rect(width(), 1),
-            pos(0, y),
-            color(0.5, 0.5, 0.5, 0.3),
-            fixed()
-        ]);
-    }
+// Game loop
+let lastTime = 0;
 
-    // Handle mouse input for editing
-    onClick((mousePos) => {
-        if (currentTool === "paint") {
-            const gridX = Math.floor(mousePos.x / gridSize) * gridSize;
-            const gridY = Math.floor(mousePos.y / gridSize) * gridSize;
+function gameLoop(timestamp) {
+    const dt = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
 
-            add([
-                rect(gridSize - 2, gridSize - 2),
-                pos(gridX + 1, gridY + 1),
-                color(1, 0, 0),
-                layer(currentLayer),
-                "tile"
-            ]);
-        } else if (currentTool === "erase") {
-            every("tile", (tile) => {
-                if (mousePos.x >= tile.pos.x && mousePos.x <= tile.pos.x + gridSize &&
-                    mousePos.y >= tile.pos.y && mousePos.y <= tile.pos.y + gridSize) {
-                    destroy(tile);
-                }
-            });
-        }
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Update and draw all game objects
+    gameObjects.forEach(obj => {
+        obj.update(dt);
+        obj.draw(ctx);
     });
-});
+
+    requestAnimationFrame(gameLoop);
+}
 
 // Start in play mode
 go("game");
+requestAnimationFrame(gameLoop);
