@@ -110,6 +110,78 @@ let currentScene = null;
 const scenes = {};
 const gameObjects = new Set();
 
+// Collision Manager
+class CollisionManager {
+    constructor() {
+        this.collidables = new Set();
+    }
+
+    addCollidable(object) {
+        this.collidables.add(object);
+    }
+
+    removeCollidable(object) {
+        this.collidables.delete(object);
+    }
+
+    checkCollisions(object) {
+        for (const other of this.collidables) {
+            if (other !== object && object.checkCollision(other)) {
+                return other;
+            }
+        }
+        return null;
+    }
+}
+
+// Sprite System
+class Sprite {
+    constructor(config) {
+        this.frameWidth = config.frameWidth || 32;
+        this.frameHeight = config.frameHeight || 32;
+        this.currentAnimation = 'idle';
+
+        // Load SVG sprite
+        this.image = new Image();
+        this.image.src = 'assets/character.svg';
+
+        // Create a temporary canvas for SVG rendering
+        this.svgCanvas = document.createElement('canvas');
+        this.svgCanvas.width = this.frameWidth;
+        this.svgCanvas.height = this.frameHeight;
+        this.svgCtx = this.svgCanvas.getContext('2d');
+
+        // Track animation state
+        this.isWalking = false;
+    }
+
+    update(dt) {
+        // Animation state is handled by SVG animations
+        this.isWalking = this.currentAnimation === 'walk';
+    }
+
+    draw(ctx, x, y, width, height) {
+        // Only draw if image is loaded
+        if (this.image.complete) {
+            // Draw the SVG image
+            ctx.drawImage(this.image, x, y, width, height);
+
+            // Control SVG animations based on state
+            const svgDoc = this.image.contentDocument;
+            if (svgDoc) {
+                const walkPulse = svgDoc.getElementById('walk-pulse');
+                if (walkPulse) {
+                    if (this.isWalking && walkPulse.getAttribute('begin') === 'indefinite') {
+                        walkPulse.beginElement();
+                    } else if (!this.isWalking) {
+                        walkPulse.endElement();
+                    }
+                }
+            }
+        }
+    }
+}
+
 class GameObject {
     constructor(x, y, width, height, color) {
         this.x = x;
@@ -118,6 +190,12 @@ class GameObject {
         this.height = height;
         this.color = color;
         this.speed = 200;
+        this.collider = {
+            offsetX: 0,
+            offsetY: 0,
+            width: width,
+            height: height
+        };
         gameObjects.add(this);
     }
 
@@ -132,6 +210,123 @@ class GameObject {
 
     destroy() {
         gameObjects.delete(this);
+        if (collisionManager.collidables.has(this)) {
+            collisionManager.removeCollidable(this);
+        }
+    }
+
+    checkCollision(other, offsetX = 0, offsetY = 0) {
+        const bounds1 = this.getBounds();
+        const bounds2 = other.getBounds();
+
+        // Apply offsets for prediction
+        bounds1.x += offsetX;
+        bounds1.y += offsetY;
+
+        return bounds1.x < bounds2.x + bounds2.width &&
+               bounds1.x + bounds1.width > bounds2.x &&
+               bounds1.y < bounds2.y + bounds2.height &&
+               bounds1.y + bounds1.height > bounds2.y;
+    }
+
+    // Debug draw method
+    drawDebug(ctx) {
+        // Draw collision bounds
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.lineWidth = 2;
+        const bounds = this.getBounds();
+        ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    getBounds() {
+        return {
+            x: this.x + this.collider.offsetX,
+            y: this.y + this.collider.offsetY,
+            width: this.collider.width,
+            height: this.collider.height
+        };
+    }
+}
+
+class Player extends GameObject {
+    constructor(x, y) {
+        super(x, y, 32, 32, 'transparent');
+        this.sprite = new Sprite({
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.direction = 'down';
+        this.moving = false;
+        collisionManager.addCollidable(this);
+    }
+
+    update(dt) {
+        const prevX = this.x;
+        const prevY = this.y;
+
+        const moveDir = { x: 0, y: 0 };
+
+        if (activeDirections.has("left") || keyStates["ArrowLeft"] || keyStates["KeyA"]) moveDir.x -= 1;
+        if (activeDirections.has("right") || keyStates["ArrowRight"] || keyStates["KeyD"]) moveDir.x += 1;
+        if (activeDirections.has("up") || keyStates["ArrowUp"] || keyStates["KeyW"]) moveDir.y -= 1;
+        if (activeDirections.has("down") || keyStates["ArrowDown"] || keyStates["KeyS"]) moveDir.y += 1;
+
+        if (moveDir.x !== 0 || moveDir.y !== 0) {
+            // Normalize for diagonal movement
+            const length = Math.sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
+            moveDir.x = moveDir.x / length;
+            moveDir.y = moveDir.y / length;
+
+            const movement = {
+                x: moveDir.x * this.speed * dt,
+                y: moveDir.y * this.speed * dt
+            };
+
+            // Try X movement first
+            let collisionX = false;
+            if (movement.x !== 0) {
+                // Check if X movement would cause collision
+                for (const other of collisionManager.collidables) {
+                    if (other !== this && this.checkCollision(other, movement.x, 0)) {
+                        collisionX = true;
+                        break;
+                    }
+                }
+                if (!collisionX) {
+                    this.x += movement.x;
+                }
+            }
+
+            // Try Y movement
+            let collisionY = false;
+            if (movement.y !== 0) {
+                // Check if Y movement would cause collision
+                for (const other of collisionManager.collidables) {
+                    if (other !== this && this.checkCollision(other, 0, movement.y)) {
+                        collisionY = true;
+                        break;
+                    }
+                }
+                if (!collisionY) {
+                    this.y += movement.y;
+                }
+            }
+        }
+
+        // Update movement state
+        this.moving = prevX !== this.x || prevY !== this.y;
+
+        // Update animation
+        this.sprite.currentAnimation = this.moving ? 'walk' : 'idle';
+        this.sprite.update(dt);
+    }
+
+    draw(ctx) {
+        this.sprite.draw(ctx, this.x, this.y, this.width, this.height);
+        // Draw debug visualization in development
+        if (debugMode) {
+            this.drawDebug(ctx);
+        }
     }
 }
 
@@ -148,34 +343,27 @@ function go(sceneName) {
     }
 }
 
+// Initialize collision manager
+const collisionManager = new CollisionManager();
+
 // Game scene
 scene("game", () => {
-    const player = new GameObject(
-        canvas.width / 2 - 20,
-        canvas.height / 2 - 20,
-        40,
-        40,
-        "rgb(0, 255, 0)"
+    // Create player
+    const player = new Player(
+        canvas.width / 2 - 16,
+        canvas.height / 2 - 16
     );
 
-    player.update = (dt) => {
-        const moveDir = { x: 0, y: 0 };
+    // Add some walls for collision testing
+    const walls = [
+        new GameObject(100, 100, 200, 40, "gray"),  // Top wall
+        new GameObject(100, 300, 200, 40, "gray"),  // Bottom wall
+        new GameObject(100, 100, 40, 240, "gray"),  // Left wall
+        new GameObject(300, 100, 40, 240, "gray")   // Right wall
+    ];
 
-        if (activeDirections.has("left") || keyStates["ArrowLeft"]) moveDir.x -= 1;
-        if (activeDirections.has("right") || keyStates["ArrowRight"]) moveDir.x += 1;
-        if (activeDirections.has("up") || keyStates["ArrowUp"]) moveDir.y -= 1;
-        if (activeDirections.has("down") || keyStates["ArrowDown"]) moveDir.y += 1;
-
-        if (moveDir.x !== 0 || moveDir.y !== 0) {
-            // Normalize for diagonal movement
-            const length = Math.sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
-            moveDir.x = moveDir.x / length;
-            moveDir.y = moveDir.y / length;
-
-            player.x += moveDir.x * player.speed * dt;
-            player.y += moveDir.y * player.speed * dt;
-        }
-    };
+    // Add walls to collision system
+    walls.forEach(wall => collisionManager.addCollidable(wall));
 });
 
 // Editor scene
@@ -207,10 +395,16 @@ scene("edit", () => {
 // Input handling
 const keyStates = {};
 window.addEventListener("keydown", (e) => {
-    keyStates[e.key] = true;
+    keyStates[e.code] = true;
+
+    // Toggle debug mode with 'D' key press
+    if (e.code === "KeyD") {
+        debugMode = !debugMode;
+        console.log(`Debug mode ${debugMode ? "enabled" : "disabled"} - collision bounds visible`);
+    }
 });
 window.addEventListener("keyup", (e) => {
-    keyStates[e.key] = false;
+    keyStates[e.code] = false;
 });
 
 canvas.addEventListener("click", (e) => {
@@ -277,6 +471,9 @@ document.querySelectorAll("#editor-tools [data-layer]").forEach(button => {
     });
 });
 
+// Debug mode flag
+let debugMode = false;
+
 // Game loop
 let lastTime = 0;
 
@@ -291,6 +488,10 @@ function gameLoop(timestamp) {
     gameObjects.forEach(obj => {
         obj.update(dt);
         obj.draw(ctx);
+        // Show debug visualization for collidable objects when debug mode is on
+        if (debugMode && collisionManager.collidables.has(obj)) {
+            obj.drawDebug(ctx);
+        }
     });
 
     requestAnimationFrame(gameLoop);

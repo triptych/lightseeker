@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!-- Base character shape -->
+    <circle cx="16" cy="16" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2">
+        <!-- Idle animation -->
+        <animate id="idle-glow"
+            attributeName="fill-opacity"
+            values="0.8;1;0.8"
+            dur="2s"
+            repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Inner light detail -->
+    <circle cx="16" cy="16" r="6" fill="#FFFFFF">
+        <!-- Walk animation -->
+        <animate id="walk-pulse"
+            attributeName="r"
+            values="6;7;6"
+            dur="0.5s"
+            repeatCount="indefinite"
+            begin="indefinite"/>
+    </circle>
+
+    <!-- Light rays -->
+    <g id="rays">
+        <line x1="16" y1="2" x2="16" y2="6" stroke="#FFD700" stroke-width="2"/>
+        <line x1="16" y1="26" x2="16" y2="30" stroke="#FFD700" stroke-width="2"/>
+        <line x1="2" y1="16" x2="6" y2="16" stroke="#FFD700" stroke-width="2"/>
+        <line x1="26" y1="16" x2="30" y2="16" stroke="#FFD700" stroke-width="2"/>
+        <animate id="ray-spin"
+            attributeName="transform"
+            attributeType="XML"
+            type="rotate"
+            from="0 16 16"
+            to="360 16 16"
+            dur="4s"
+            repeatCount="indefinite"/>
+    </g>
+</svg>

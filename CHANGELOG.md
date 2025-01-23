@@ -6,6 +6,7 @@ All notable changes to the LightSeeker project will be documented in this file.
 
 ### Added
 
+- Character system implementation with SVG-based assets
 - README.md with project overview, features, and setup instructions
 - MIT License for 2025
 - Core engine setup features:
