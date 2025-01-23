@@ -11,13 +11,21 @@ All notable changes to the LightSeeker project will be documented in this file.
 - MIT License for 2025
 - Core engine setup features:
   - HTML5 Canvas API implementation with pixel-perfect rendering
-  - Basic map rendering system with layers
+  - Debug mode with performance monitoring
+  - Camera and viewport system for map navigation
+  - Basic map rendering system with multiple layers:
+    - Ground layer rendering
+    - Object layer management
+    - Layer visibility controls
   - Vector-based character movement
 - Map editor features:
   - Grid-based placement system
-  - Layer management
-  - Basic editing tools
-  - Tile palette system
+  - Layer management (ground/objects/events)
+  - Basic editing tools (select/paint/erase)
+  - Tile palette system with:
+    - Tile selection interface
+    - Category organization
+    - Quick access to common tiles
 - Mobile support features:
   - Virtual D-pad and action buttons
   - Responsive canvas scaling
@@ -26,6 +34,10 @@ All notable changes to the LightSeeker project will be documented in this file.
 ### Fixed
 
 - Canvas rendering issue (b687a5f) by correctly accessing canvas element and context
+- Character sprite rendering (2025-01-22):
+  - Fixed SVG sprite loading and rendering in Sprite class
+  - Added proper sprite loading state tracking in Player class
+  - Improved canvas context configuration in Engine class
 
 ## [0.1.0] - 2024-01-09
 

@@ -11,14 +11,17 @@ body {
     flex-direction: column;
     overflow: hidden;
     background: #000;
+    font-family: Arial, sans-serif;
 }
 
+/* Mode Toggle */
 #mode-toggle {
     padding: 10px;
     background: #222;
     display: flex;
     justify-content: center;
     gap: 10px;
+    z-index: 100;
 }
 
 #mode-toggle button {
@@ -28,24 +31,46 @@ body {
     background: #444;
     color: white;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
+
+#mode-toggle button:hover {
+    background: #555;
 }
 
 #mode-toggle button.active {
-    background: #666;
+    background: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
+/* Editor Tools */
 #editor-tools {
     padding: 15px;
     background: #222;
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-bottom: 1px solid #444;
+}
+
+.editor-toolbar {
+    display: flex;
     justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .tool-group, .layer-controls {
     display: flex;
     gap: 10px;
+    align-items: center;
+}
+
+.tool-group::before, .layer-controls::before {
+    content: attr(data-group);
+    color: #888;
+    font-size: 0.9em;
 }
 
 #editor-tools button {
@@ -55,32 +80,74 @@ body {
     background: #444;
     color: white;
     cursor: pointer;
-    transition: background 0.2s;
-}
-
-#editor-tools button.active {
-    background: #666;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 #editor-tools button:hover {
     background: #555;
 }
 
+#editor-tools button.active {
+    background: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+#editor-tools button i {
+    font-size: 1.2em;
+}
+
+/* Tile Palette */
+.tile-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 5px;
+    padding: 10px;
+    background: #333;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tile-palette .tile {
+    width: 40px;
+    height: 40px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tile-palette .tile:hover {
+    border-color: #007bff;
+}
+
+.tile-palette .tile.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+/* Game Container */
 #game-container {
     flex: 1;
     width: 100%;
     position: relative;
     overflow: hidden;
+    background: #111;
 }
 
+/* Game Controls */
 #controls {
     width: 100%;
     padding: 20px;
-    background: #333;
+    background: rgba(51, 51, 51, 0.9);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    backdrop-filter: blur(5px);
 }
 
 .d-pad {
@@ -99,10 +166,12 @@ body {
     color: white;
     font-size: 20px;
     touch-action: manipulation;
+    transition: all 0.1s ease;
 }
 
 .d-pad button:active {
     background: #888;
+    transform: scale(0.95);
 }
 
 .action-buttons {
@@ -118,11 +187,14 @@ body {
     background: #666;
     color: white;
     font-size: 16px;
+    font-weight: bold;
     touch-action: manipulation;
+    transition: all 0.1s ease;
 }
 
 .action-buttons button:active {
     background: #888;
+    transform: scale(0.95);
 }
 
 /* Hide empty d-pad cells */
@@ -131,4 +203,75 @@ body {
 .d-pad button:nth-child(7),
 .d-pad button:nth-child(9) {
     visibility: hidden;
+}
+
+/* Debug Mode */
+.debug-info {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #editor-tools {
+        padding: 10px;
+    }
+
+    .editor-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tool-group, .layer-controls {
+        justify-content: center;
+    }
+
+    #controls {
+        padding: 10px;
+    }
+
+    .action-buttons button {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Tooltips */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* Animations */
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.button-press {
+    animation: buttonPress 0.1s ease;
 }

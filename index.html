@@ -8,26 +8,28 @@
   </head>
   <body>
     <div id="mode-toggle">
-      <button id="play-mode" class="active">Play</button>
-      <button id="edit-mode">Edit</button>
+      <button id="play-mode" class="active" data-tooltip="Switch to Play Mode">Play</button>
+      <button id="edit-mode" data-tooltip="Switch to Edit Mode">Edit</button>
     </div>
 
     <div id="game-container"></div>
 
     <div id="editor-tools" style="display: none;">
-      <div class="tool-group">
-        <button data-tool="select">Select</button>
-        <button data-tool="paint">Paint</button>
-        <button data-tool="erase">Erase</button>
-      </div>
-      <div class="layer-controls">
-        <button data-layer="ground">Ground</button>
-        <button data-layer="objects">Objects</button>
-        <button data-layer="events">Events</button>
+      <div class="editor-toolbar">
+        <div class="tool-group" data-group="Tools">
+          <button data-tool="select" data-tooltip="Select and move objects">Select</button>
+          <button data-tool="paint" data-tooltip="Paint tiles">Paint</button>
+          <button data-tool="erase" data-tooltip="Erase tiles">Erase</button>
+        </div>
+        <div class="layer-controls" data-group="Layers">
+          <button data-layer="ground" data-tooltip="Edit ground layer">Ground</button>
+          <button data-layer="objects" data-tooltip="Edit objects layer">Objects</button>
+          <button data-layer="events" data-tooltip="Edit events layer">Events</button>
+        </div>
       </div>
     </div>
 
-    <div id="controls">
+    <div id="controls" style="display: none;">
       <div class="d-pad">
         <button></button>
         <button>↑</button>
@@ -41,8 +43,8 @@
       </div>
 
       <div class="action-buttons">
-        <button>A</button>
-        <button>B</button>
+        <button data-tooltip="Primary Action">A</button>
+        <button data-tooltip="Secondary Action">B</button>
       </div>
     </div>
 
