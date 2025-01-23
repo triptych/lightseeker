@@ -2,6 +2,9 @@
  * Core game engine handling canvas, game loop, and scene management
  */
 
+import CollisionManager from './collision.js';
+import InputManager from './input.js';
+
 // Canvas setup
 class Engine {
     constructor(containerId) {
@@ -14,7 +17,11 @@ class Engine {
         this.gameObjects = new Set();
         this.scenes = {};
         this.currentScene = null;
-        this.debugMode = true;  // Start with debug mode on
+        this.debugMode = false;  // Start with debug mode off
+
+        // Initialize managers
+        this.collisionManager = new CollisionManager();
+        this.inputManager = new InputManager();
 
         // Add canvas to container
         const container = document.getElementById(containerId);
@@ -65,10 +72,13 @@ class Engine {
     // Game Object Management
     addGameObject(gameObject) {
         this.gameObjects.add(gameObject);
+        gameObject.setEngine(this);
+        this.collisionManager.addCollidable(gameObject);
     }
 
     removeGameObject(gameObject) {
         this.gameObjects.delete(gameObject);
+        this.collisionManager.removeCollidable(gameObject);
     }
 
     // Debug Mode

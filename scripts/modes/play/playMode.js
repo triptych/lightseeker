@@ -68,7 +68,6 @@ class PlayMode {
                 'gray'
             );
             this.engine.addGameObject(wallObject);
-            this.engine.collisionManager.addCollidable(wallObject);
         });
     }
 

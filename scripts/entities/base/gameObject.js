@@ -129,11 +129,16 @@ class GameObject {
 
         const collisions = this.engine.collisionManager.checkMovement(this, dx, dy);
 
-        // Move on axes that don't cause collision
-        if (!collisions.x) this.x += dx;
-        if (!collisions.y) this.y += dy;
+        // Move on axes where there are no collisions
+        if (!collisions.x) {
+            this.x += dx;
+        }
+        if (!collisions.y) {
+            this.y += dy;
+        }
 
-        return !collisions.x && !collisions.y;
+        // Return true if we were able to move in at least one direction
+        return !collisions.x || !collisions.y;
     }
 }
 

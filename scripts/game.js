@@ -15,8 +15,6 @@ class Game {
     constructor() {
         // Initialize core systems
         this.engine = new Engine('game-container');
-        this.engine.inputManager = new InputManager();
-        this.engine.collisionManager = new CollisionManager();
 
         // Initialize modes
         this.playMode = new PlayMode(this.engine);
@@ -121,7 +119,7 @@ export default game;
 
 // Add debug mode toggle
 document.addEventListener('keydown', (e) => {
-    if (e.code === 'KeyD') {
+    if (e.code === 'Backquote') {
         game.toggleDebug();
     }
 });
