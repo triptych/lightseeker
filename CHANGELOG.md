@@ -38,6 +38,8 @@ All notable changes to the LightSeeker project will be documented in this file.
   - Fixed SVG sprite loading and rendering in Sprite class
   - Added proper sprite loading state tracking in Player class
   - Improved canvas context configuration in Engine class
+- UI consistency (2025-01-22):
+  - Fixed text size inconsistency between Play, Edit, and About buttons in navigation bar
 
 ## [0.1.0] - 2024-01-09
 
