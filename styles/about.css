@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+.about-page {
+    height: auto !important;
+    overflow: auto !important;
+    min-height: 100vh;
+}
+
+.about-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.title {
+    font-size: 3em;
+    margin-bottom: 30px;
+    animation: rainbow 6s linear infinite;
+}
+
+.splash-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+}
+
+.links {
+    margin-top: 30px;
+}
+
+.links a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s ease;
+}
+
+.links a:hover {
+    color: #0056b3;
+}
+
+@keyframes rainbow {
+    0% { color: #ff0000; }
+    17% { color: #ff8000; }
+    33% { color: #ffff00; }
+    50% { color: #00ff00; }
+    67% { color: #0000ff; }
+    83% { color: #8000ff; }
+    100% { color: #ff0000; }
+}
+
+.back-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+    text-decoration: none;
+    padding: 8px 20px;
+    background: #222;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    background: #444;
+}
